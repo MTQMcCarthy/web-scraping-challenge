@@ -5,6 +5,8 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 from splinter import Browser
 import os
+import requests
+#import request as req
 
 def init_browser():
     executable_path = {'executable_path':'C:/bin/chromedriver.exe'} 
@@ -17,16 +19,21 @@ def scrape ():
     # visit the NASA Mars News site and scrape headlines
     news_url = 'https://mars.nasa.gov/news/'
     browser.visit(news_url)
+    
     time.sleep(1)
-    nasa_html = browser.html
-    nasa_soup = bs(nasa_html, 'html.parser')
+    
+    # scrape to soup
+    browser_html = browser.html
+    news_soup = bs(browser_html, "html.parser")
+    
+    # Get most recent headline
 
     news_list = nasa_soup.find('ul', class_='item_list')
     first_item = news_list.find('li', class_='slide')
     news_headline = first_item.find('div', class_='content_title').text
     news_teaser = first_item.find('div', class_='article_teaser_body').text
     mars_data["nasa_headline"] = news_headline
-    mars_data["nasa_teaser"] = news_teaser
+    mars_teaser["nasa_teaser"] = news_teaser
 
     # visit the JPL website and scrape the featured image
     jpl_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
